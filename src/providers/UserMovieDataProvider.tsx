@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { Movie } from "@/types";
-import MovieCasheProvider from "./MovieCasheProvider";
+import MovieCacheProvider from "./MovieCacheProvider";
 
 // TODO: Add remove functions for Movies, ensure that they are safe even when removeing items that already exist
 // TODO: Ensure movies can't be added twice, Look into if storing movies as sets would be feasable here.
@@ -51,7 +51,7 @@ const UserMovieDataProvider = ({ children }: PropsWithChildren) => {
     setLikedMovies(newSet);
     console.log(`[User Movie Data] Addded movie id: ${movieId} to liked movies`);
 
-    // Update cashe
+    // Update cache
   };
 
   const removeMovieFromLiked = (movieId: number) => {
