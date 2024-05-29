@@ -1,21 +1,22 @@
 import React from "react";
-import { StyleSheet, Pressable, Text } from "react-native";
-import { LoginButtonType } from "./utils/LoginButtonType";
+import { StyleSheet, Pressable, Text, TextStyle } from "react-native";
+import { LoginButtonType } from "@/types";
 import { useFonts } from "expo-font";
-import { getMovieById } from "@/src/app/model/theMovieDB_API";
-import viewModel from "../viewmodel/viewmodel";
 
 interface Props {
   buttonText: String;
-  buttonType: typeof LoginButtonType.Apple;
+  buttonType: LoginButtonType;
 }
 
 const LoginButton = (props: Props) => {
-  const selectedButtonStyle = buttonStyleMap[props.buttonType];
-  const selectedTextStyles = textStyleMap[props.buttonType];
+  const selectedButtonStyle = loginButtonStyleMap[props.buttonType];
+  const selectedTextStyles = loginButtonTextStyleMap[props.buttonType];
 
   return (
-    <Pressable style={[styles.DefaultStyling, selectedButtonStyle]} onTouchEnd={() => console.log(viewModel.signedIn)}>
+    <Pressable
+      style={[styles.DefaultStyling, selectedButtonStyle]}
+      onTouchEnd={() => console.log(`Logging in with ${props.buttonType}`)}
+    >
       <Text style={[styles.text, selectedTextStyles]}>{props.buttonText}</Text>
     </Pressable>
   );
@@ -46,8 +47,8 @@ const buttonStyles = StyleSheet.create({
     backgroundColor: "#4285F4",
     borderWidth: 0,
   },
-  Email: {},
-  NoAccount: {
+  Email_Password: {},
+  No_Account: {
     borderWidth: 0,
   },
 });
@@ -58,23 +59,22 @@ const textStyles = StyleSheet.create({
     color: "#fff",
   },
   Google: {},
-  Email: {},
-  NoAccount: {
+  Email_Password: {},
+  No_Account: {
     color: "#72BCD4",
   },
 });
 
-// Maps to map button type to specific styles
-const buttonStyleMap: { [key: string]: object } = {
-  Apple: buttonStyles.Apple,
-  Google: buttonStyles.Google,
-  Email: buttonStyles.Email,
-  NoAccount: buttonStyles.NoAccount,
+const loginButtonStyleMap: Record<LoginButtonType, TextStyle> = {
+  [LoginButtonType.Apple]: buttonStyles.Apple,
+  [LoginButtonType.Google]: buttonStyles.Google,
+  [LoginButtonType.Email_Password]: buttonStyles.Email_Password,
+  [LoginButtonType.No_Account]: buttonStyles.No_Account,
 };
 
-const textStyleMap: { [key: string]: object } = {
-  Apple: textStyles.Apple,
-  Google: textStyles.Google,
-  Email: textStyles.Email,
-  NoAccount: textStyles.NoAccount,
+const loginButtonTextStyleMap: Record<LoginButtonType, TextStyle> = {
+  [LoginButtonType.Apple]: textStyles.Apple,
+  [LoginButtonType.Google]: textStyles.Google,
+  [LoginButtonType.Email_Password]: textStyles.Email_Password,
+  [LoginButtonType.No_Account]: textStyles.No_Account,
 };
