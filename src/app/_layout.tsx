@@ -12,6 +12,7 @@ import "react-native-reanimated";
 import UserMovieDataProvider, {
   useUserMovieData,
 } from "@providers/UserMovieDataProvider";
+import MovieCasheProvider from "@providers/MovieCasheProvider";
 
 import { useColorScheme } from "@components/useColorScheme";
 
@@ -57,12 +58,14 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <UserMovieDataProvider>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-        </Stack>
-      </UserMovieDataProvider>
+      <MovieCasheProvider>
+        <UserMovieDataProvider>
+          <Stack>
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+          </Stack>
+        </UserMovieDataProvider>
+      </MovieCasheProvider>
     </ThemeProvider>
   );
 }

@@ -1,18 +1,18 @@
 import { createContext, PropsWithChildren, useContext, useState } from "react";
 import { Movie } from "@/types";
-import MovieCashe from "./MovieCasheProvider";
+import MovieCasheProvider from "./MovieCasheProvider";
 
 // TODO: Add remove functions for Movies, ensure that they are safe even when removeing items that already exist
 // TODO: Ensure movies can't be added twice, Look into if storing movies as sets would be feasable here.
 
 // Type definition for the type of data being stored
 type UserMovieDataType = {
-  likedMovies: Set<Movie>;
-  dislikedMovies: Set<Movie>;
-  addMovieToLiked: (movie: Movie) => void;
-  addMovieToDisliked: (movie: Movie) => void;
-  removeMovieFromLiked: (movie: Movie) => void;
-  removeMovieFromDisliked: (movie: Movie) => void;
+  likedMovies: Set<number>;
+  dislikedMovies: Set<number>;
+  addMovieToLiked: (movie: number) => void;
+  addMovieToDisliked: (movie: number) => void;
+  removeMovieFromLiked: (movie: number) => void;
+  removeMovieFromDisliked: (movie: number) => void;
 };
 
 // Create UserMovieDataContext with Default context values
@@ -28,69 +28,71 @@ export const UserMovieDataContext = createContext<UserMovieDataType>({
 // Wrapper component that allows access to stored movie data
 const UserMovieDataProvider = ({ children }: PropsWithChildren) => {
   // Stored liked movie data
-  const [likedMovies, setLikedMovies] = useState(new Set<Movie>());
+  const [likedMovies, setLikedMovies] = useState(new Set<number>());
 
   // Stored disliked movie data
-  const [dislikedMovies, setDisLikedMovies] = useState(new Set<Movie>());
+  const [dislikedMovies, setDisLikedMovies] = useState(new Set<number>());
 
-  const addMovieToLiked = (movie: Movie) => {
+  const addMovieToLiked = (movieId: number) => {
     // Ensure liked doesn't alreay have movie
-    if (likedMovies.has(movie)) {
-      console.log("Movie already present");
+    if (likedMovies.has(movieId)) {
+      console.log(`[User Movie Data] Movie id: ${movieId} already present in liked movies`);
       return;
     }
 
     // Remove from disliked if present
-    if (dislikedMovies.has(movie)) {
-      removeMovieFromDisliked(movie);
+    if (dislikedMovies.has(movieId)) {
+      removeMovieFromDisliked(movieId);
+      console.log(`[User Movie Data] Removing movie id: ${movieId} from disliked --v`);
     }
 
     const newSet = new Set(likedMovies);
-    newSet.add(movie);
+    newSet.add(movieId);
     setLikedMovies(newSet);
-    console.log("addded movie");
+    console.log(`[User Movie Data] Addded movie id: ${movieId} to liked movies`);
 
     // Update cashe
   };
 
-  const removeMovieFromLiked = (movie: Movie) => {
-    if (!likedMovies.has(movie)) {
-      console.log("Movie was not present liked");
+  const removeMovieFromLiked = (movieId: number) => {
+    if (!likedMovies.has(movieId)) {
+      console.log(`[User Movie Data] Movie id: ${movieId} was not present in liked movies on atempted removal`);
       return;
     }
     const newSet = new Set(likedMovies);
-    newSet.delete(movie);
+    newSet.delete(movieId);
     setLikedMovies(newSet);
-    console.log("removed movie from liked");
+    console.log(`[User Movie Data] Removed movie id: ${movieId} from liked`);
   };
 
-  const addMovieToDisliked = (movie: Movie) => {
+  const addMovieToDisliked = (movieId: number) => {
     // Make sure disliked movies doesent alreay have movie
-    if (dislikedMovies.has(movie)) {
-      console.log(`Disliked movie already has ${movie.title}`);
+    if (dislikedMovies.has(movieId)) {
+      console.log(`[User Movie Data] Movie id: ${movieId} is already present in disliked movies`);
       return;
     }
 
     // Make sure liked movies doesn't have movie
-    if (likedMovies.has(movie)) {
-      console.log(`Removing ${movie.title} from liked. Adding to disliked`);
-      removeMovieFromLiked(movie);
+    if (likedMovies.has(movieId)) {
+      console.log(`[User Movie Data] Removing movie id: ${movieId} from liked --v`);
+      removeMovieFromLiked(movieId);
     }
 
     const newSet = new Set(dislikedMovies);
-    newSet.add(movie);
+    newSet.add(movieId);
     setDisLikedMovies(newSet);
+    console.log(`[User Movie Data] Adding movie id: ${movieId} to disliked movies`);
   };
 
-  const removeMovieFromDisliked = (movie: Movie) => {
-    if (!dislikedMovies.has(movie)) {
-      console.log("Movie was not present disliked");
+  const removeMovieFromDisliked = (movieId: number) => {
+    if (!dislikedMovies.has(movieId)) {
+      console.log(`[User Movie Data] Movie id: ${movieId} was not present in disliked on atempted removal`);
       return;
     }
     const newSet = new Set(dislikedMovies);
-    newSet.delete(movie);
+    newSet.delete(movieId);
     setDisLikedMovies(newSet);
-    console.log("removed movie from disliked");
+    console.log(`[User Movie Data] Movie id: ${movieId} was removed from disliked movies`);
   };
 
   // Create context provider to be wrapped around components that need access to User Movie Data

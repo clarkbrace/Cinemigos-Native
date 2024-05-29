@@ -1,5 +1,5 @@
 import { Movie } from "@/types";
-import { createContext, PropsWithChildren, useRef } from "react";
+import { createContext, PropsWithChildren, useContext, useRef } from "react";
 
 // TODO: Change cashedMovieIds to Double LinkedList + add current index to movie cashe along with movie for extra speed
 
@@ -11,13 +11,22 @@ const CASHE_SIZE = 20;
 //   casheMovie: () => void;
 // };
 
-// export const MovieCasheContext = createContext<MovieCasheType>({
-//   cashedMovieIds: [],
-//   movieCashe: new Map<number, Movie>(),
-//   casheMovie: () => {},
-// });
+type MovieCasheFunctions = {
+  addMovieToCashe: (movie: Movie) => void;
+  isMovieInCashe: (movieId: number) => boolean;
+  getMovieFromCashe: (movieId: number) => Movie | undefined;
+};
 
-const MovieCashe = ({ children }: PropsWithChildren) => {
+// Default return values
+export const MovieCasheContext = createContext<MovieCasheFunctions>({
+  // cashedMovieIds: [],
+  // movieCashe: new Map<number, Movie>(),
+  addMovieToCashe: (movie: Movie) => {},
+  isMovieInCashe: (movieId: number) => false,
+  getMovieFromCashe: (movieId: number) => undefined,
+});
+
+const MovieCasheProvider = ({ children }: PropsWithChildren) => {
   const cashedMovieIds = useRef<number[]>([]);
   const movieCashe = useRef(new Map<number, Movie>());
 
@@ -36,6 +45,10 @@ const MovieCashe = ({ children }: PropsWithChildren) => {
     cashedMovieIds.current.unshift(movie.id);
   };
 
+  const isMovieInCashe = (movieId: number) => {
+    return movieCashe.current.has(movieId);
+  };
+
   // I kinda hate this implemntaion. Wreaks the runtime bonus from using map + array
   const getMovieFromCashe = (movieId: number) => {
     if (!movieCashe.current.has(movieId)) {
@@ -50,6 +63,16 @@ const MovieCashe = ({ children }: PropsWithChildren) => {
 
     return movieCashe.current.get(movieId);
   };
+
+  return (
+    <MovieCasheContext.Provider
+      value={{ addMovieToCashe, isMovieInCashe, getMovieFromCashe }}
+    >
+      {children}
+    </MovieCasheContext.Provider>
+  );
 };
 
-export default MovieCashe;
+export default MovieCasheProvider;
+
+export const useMovieCasheProvider = () => useContext(MovieCasheContext);

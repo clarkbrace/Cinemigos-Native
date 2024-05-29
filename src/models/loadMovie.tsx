@@ -1,12 +1,13 @@
 import axios from "axios";
 import { Movie } from "@/types";
 
-interface ApiResponse {
+export interface ApiResponse {
   sucsess: boolean;
-  movie: Movie | undefined;
+  movie?: Movie;
+  error?: string;
 }
 
-export async function getMovieById(movieId: number): Promise<ApiResponse> {
+export async function getTheMovieDBMovieById(movieId: number): Promise<ApiResponse> {
   console.log("Begin Api request");
   const options = {
     method: "GET",
@@ -19,10 +20,13 @@ export async function getMovieById(movieId: number): Promise<ApiResponse> {
   };
 
   // Atempt to get movie data
+
   try {
-    const responce: Movie = await axios.request(options);
+    const responce: Movie = (await axios.request(options)).data;
+    console.log(`[Load Movie] Sucsessful call to movie id: ${movieId}`);
     return { sucsess: true, movie: responce };
-  } catch (error) {
-    return { sucsess: false, movie: undefined };
+  } catch (error: any) {
+    console.log(`[Load Movie] Failed call to movie id: ${movieId}`);
+    return { sucsess: false, error: error.message };
   }
 }

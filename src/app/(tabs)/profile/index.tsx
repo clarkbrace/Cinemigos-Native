@@ -9,28 +9,24 @@ const ProfileScreen = () => {
   const userMovieData = useUserMovieData();
 
   // REMOVE LATER
-  const beeMovieObj: Movie = dummy_movies[0];
-  const sawMovieObj: Movie = dummy_movies[1];
 
   const addBeeMovie = () => {
-    userMovieData.addMovieToLiked(beeMovieObj);
-  };
-  const addSawMovie = () => {
-    userMovieData.addMovieToLiked(sawMovieObj);
+    userMovieData.addMovieToLiked(5559);
+    userMovieData.addMovieToLiked(5552);
   };
 
   return (
     <View>
-      <Text>Bee Movie Below</Text>
+      <Text>Movies:</Text>
       <FlatList
         data={Array.from(userMovieData.likedMovies)}
-        renderItem={({ item }) => <MovieListItem movie={item} />}
+        renderItem={({ item }) => <MovieListItem movieId={item} />}
         numColumns={2}
         contentContainerStyle={{ gap: 10, padding: 10 }}
         columnWrapperStyle={{ gap: 10 }}
       />
       <Button onPress={addBeeMovie} title="Add Bee Movie" />
-      <Button onPress={addSawMovie} title="Add Saw Movie" />
+      <Button onPress={() => console.log(Array.from(userMovieData.likedMovies))} title="liked movies" />
     </View>
   );
 };
