@@ -28,7 +28,7 @@ export const UserMovieDataContext = createContext<UserMovieDataType>({
 // Wrapper component that allows access to stored movie data
 const UserMovieDataProvider = ({ children }: PropsWithChildren) => {
   // Stored liked movie data
-  const [likedMovies, setLikedMovies] = useState(new Set<number>());
+  const [likedMovies, setLikedMovies] = useState(new Set<number>([5559, 671, 157336, 593643, 105, 165, 196, 1236345]));
 
   // Stored disliked movie data
   const [dislikedMovies, setDisLikedMovies] = useState(new Set<number>());

@@ -8,6 +8,7 @@
       "@providers/*": ["./src/providers/*"],
       "@constants/*": ["./src/constants/*"],
       "@services/*": ["./src/services/*"],
+      "@hooks/*": ["./src/hooks/*"],
       "@models/*": ["./src/models/*"],
       "@assets/*": ["./assets/*"]
     }

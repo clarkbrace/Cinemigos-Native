@@ -3,27 +3,21 @@ import { createContext, PropsWithChildren, useContext, useRef } from "react";
 
 // TODO: Change cache dMovieIds to Double LinkedList + add current index to movie cache along with movie for extra speed
 
-const CACHE_SIZE = 20;
-
-// type MovieCacheType = {
-//   cachedMovieIds: number[];
-//   movieCache: Map<number, Movie>;
-//   cacheMovie: () => void;
-// };
+const CACHE_SIZE = 256;
 
 type MovieCacheFunctions = {
   addMovieToCache: (movie: Movie) => void;
   isMovieInCache: (movieId: number) => boolean;
   getMovieFromCache: (movieId: number) => Movie | undefined;
+  printCache: () => void;
 };
 
 // Default return values
 export const MovieCacheContext = createContext<MovieCacheFunctions>({
-  // cachedMovieIds: [],
-  // movieCache: new Map<number, Movie>(),
   addMovieToCache: (movie: Movie) => {},
   isMovieInCache: (movieId: number) => false,
   getMovieFromCache: (movieId: number) => undefined,
+  printCache: () => {},
 });
 
 const MovieCacheProvider = ({ children }: PropsWithChildren) => {
@@ -31,18 +25,27 @@ const MovieCacheProvider = ({ children }: PropsWithChildren) => {
   const movieCache = useRef(new Map<number, Movie>());
 
   const addMovieToCache = (movie: Movie) => {
-    // Check to see if cache is full
-    if (cachedMovieIds.current.length >= CACHE_SIZE) {
-      const leastCalledMovie = cachedMovieIds.current[-1];
+    // Check to see if movie is already in cache
+    if (isMovieInCache(movie.id)) {
+      console.log(`[Movie Cache] Movie ${movie.id} already in cache`);
+      return;
+    }
 
+    // Remove last movie from cache if cache is filled
+    if (cachedMovieIds.current.length >= CACHE_SIZE) {
+      const leastCalledMovieId = cachedMovieIds.current.pop();
       // Remove movie from cache
-      movieCache.current.delete(leastCalledMovie);
-      cachedMovieIds.current.pop();
+      if (leastCalledMovieId) {
+        console.log(`[Movie Cache] Removing ${movieCache.current.get(leastCalledMovieId)?.title} from cache`);
+        movieCache.current.delete(leastCalledMovieId);
+      }
     }
 
     // Add movie to cache
     movieCache.current.set(movie.id, movie);
-    cachedMovieIds.current.unshift(movie.id);
+    cachedMovieIds.current = [movie.id, ...cachedMovieIds.current];
+
+    console.log(`[Movie Cache] Added movie ${movie.title} to cache`);
   };
 
   const isMovieInCache = (movieId: number) => {
@@ -56,15 +59,31 @@ const MovieCacheProvider = ({ children }: PropsWithChildren) => {
     }
 
     // Add movie id to top of cachedMovieIds
-    cachedMovieIds.current = cachedMovieIds.current.filter((movieId) => movieId !== movieId);
-    cachedMovieIds.current.unshift(movieId);
+    // Updating Caching not multi-thread safe!!!!
+    // cachedMovieIds.current = cachedMovieIds.current.filter((movieId) => movieId !== movieId);
+    // cachedMovieIds.current = [movieId, ...cachedMovieIds.current];
 
+    console.log(`[Movie Cache] Returning moive ${movieCache.current.get(movieId)?.title} from cache`);
     return movieCache.current.get(movieId);
+  };
+
+  const printCache = () => {
+    const movieTitles: string[] = [];
+    movieCache.current.forEach((movie) => {
+      movieTitles.push(movie.title);
+    });
+
+    console.log(`[Movie Cache] Cache contence: ${Array.from(cachedMovieIds.current)}, Cache Movies: ${movieTitles}`);
   };
 
   return (
     <MovieCacheContext.Provider
-      value={{ addMovieToCache: addMovieToCache, isMovieInCache: isMovieInCache, getMovieFromCache: getMovieFromCache }}
+      value={{
+        addMovieToCache,
+        isMovieInCache,
+        getMovieFromCache,
+        printCache,
+      }}
     >
       {children}
     </MovieCacheContext.Provider>

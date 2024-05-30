@@ -8,7 +8,6 @@ export interface ApiResponse {
 }
 
 export async function getTheMovieDBMovieById(movieId: number): Promise<ApiResponse> {
-  console.log("Begin Api request");
   const options = {
     method: "GET",
     url: `https://api.themoviedb.org/3/movie/${movieId}`,
@@ -23,7 +22,7 @@ export async function getTheMovieDBMovieById(movieId: number): Promise<ApiRespon
 
   try {
     const responce: Movie = (await axios.request(options)).data;
-    console.log(`[Load Movie] Sucsessful call to movie id: ${movieId}`);
+    console.log(`[Load Movie API] Sucsessful call to movie id: ${movieId}`);
     return { sucsess: true, movie: responce };
   } catch (error: any) {
     console.log(`[Load Movie] Failed call to movie id: ${movieId}`);

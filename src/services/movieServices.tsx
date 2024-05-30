@@ -2,10 +2,10 @@ import { useMovieCacheProvider } from "@/src/providers/MovieCacheProvider";
 import { ApiResponse, getTheMovieDBMovieById } from "@models/loadMovie";
 import { Movie } from "@/types";
 
+// Main movie query function for all UI
 export async function getMovieById(movieId: number): Promise<Movie | undefined> {
-  console.log("Here");
   const movieCacheProvider = useMovieCacheProvider();
-  console.log("Here2");
+
   // Check to see if movie is in cache
   if (movieCacheProvider.isMovieInCache(movieId)) {
     return movieCacheProvider.getMovieFromCache(movieId);
