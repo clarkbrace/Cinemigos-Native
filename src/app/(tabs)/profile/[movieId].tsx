@@ -1,9 +1,10 @@
-import { View, Text, ScrollView, StyleSheet, ActivityIndicator } from "react-native";
+import { View, Text, ScrollView, StyleSheet, ActivityIndicator, FlatList } from "react-native";
 import React from "react";
 import useMovieManager from "@/src/hooks/useMovie";
 import { useLocalSearchParams, Stack } from "expo-router";
 import MovieBackdropOverlay from "@components/MovieBackdropOverlay";
 import { minutesToHrMin, formatData } from "@/src/utility functions/TextFormatting";
+import GenreTile from "@/src/components/GenreTile";
 
 const MovieDetailScreen = () => {
   const { movieId } = useLocalSearchParams();
@@ -29,8 +30,14 @@ const MovieDetailScreen = () => {
               <Text style={styles.movieDetailsText}>{minutesToHrMin(movie.runtime)}</Text>
               <Text style={styles.movieDetailsText}>{formatData(movie.release_date)}</Text>
             </View>
-
             <Text style={styles.overview}>{movie.overview}</Text>
+
+            <FlatList
+              horizontal={true}
+              data={movie.genres}
+              renderItem={({ item }) => <GenreTile id={item.id} name={item.name} />}
+              contentContainerStyle={styles.contentContainerStyle}
+            />
           </ScrollView>
         )
       )}
@@ -53,7 +60,13 @@ const styles = StyleSheet.create({
     color: "black",
     paddingHorizontal: 20,
     paddingVertical: 5,
-    fontSize: 16
+    fontSize: 16,
+  },
+  contentContainerStyle: {
+    justifyContent: "space-evenly", // Distribute items evenly
+    paddingHorizontal: 10, // Add padding if needed
+    width: "100%",
+    padding: 5,
   },
 });
 
