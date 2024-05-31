@@ -24,8 +24,17 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+
+  // Font and 
   const [loaded, error] = useFonts({
     SpaceMono: require("@assets/fonts/SpaceMono-Regular.ttf"),
+    LexendDecaBold: require("@/assets/fonts/Lexend Deca Bold.ttf"),
+    LexendDecaExtraLight: require("@/assets/fonts/Lexend Deca ExtraLight.ttf"),
+    LexendDecaLight: require("@/assets/fonts/Lexend Deca Light.ttf"),
+    LexendDecaMedium: require("@/assets/fonts/Lexend Deca Medium.ttf"),
+    LexendDecaRegular: require("@/assets/fonts/Lexend Deca Regular.ttf"),
+    LexendDecaSemiBold: require("@/assets/fonts/Lexend Deca SemiBold.ttf"),
+    LexendDecaThin: require("@/assets/fonts/Lexend Deca Thin.ttf"),
     ...FontAwesome.font,
   });
 
