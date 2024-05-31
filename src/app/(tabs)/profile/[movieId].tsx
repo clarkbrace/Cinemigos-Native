@@ -1,10 +1,12 @@
-import { View, Text, ScrollView, StyleSheet, ActivityIndicator, FlatList } from "react-native";
+import { View, Text, ScrollView, StyleSheet, ActivityIndicator } from "react-native";
 import React from "react";
 import useMovieManager from "@/src/hooks/useMovie";
 import { useLocalSearchParams, Stack } from "expo-router";
 import MovieBackdropOverlay from "@components/MovieBackdropOverlay";
 import { minutesToHrMin, formatData } from "@/src/utility functions/TextFormatting";
 import GenreTile from "@/src/components/GenreTile";
+import Divider from "@components/Divider";
+import DataAcknowledgment from "@components/DataAcknowledgment";
 
 const MovieDetailScreen = () => {
   const { movieId } = useLocalSearchParams();
@@ -32,12 +34,13 @@ const MovieDetailScreen = () => {
             </View>
             <Text style={styles.overview}>{movie.overview}</Text>
 
-            <FlatList
-              horizontal={true}
-              data={movie.genres}
-              renderItem={({ item }) => <GenreTile id={item.id} name={item.name} />}
-              contentContainerStyle={styles.contentContainerStyle}
-            />
+            <ScrollView horizontal={true} style={{ width: "100%", paddingVertical: 10, paddingEnd: 10 }}>
+              {movie.genres.map((genre) => (
+                <GenreTile id={genre.id} name={genre.name} key={genre.name} />
+              ))}
+            </ScrollView>
+            <Divider />
+            <DataAcknowledgment />
           </ScrollView>
         )
       )}

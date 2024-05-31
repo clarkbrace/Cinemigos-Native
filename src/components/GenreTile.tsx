@@ -4,8 +4,10 @@ import React from "react";
 
 const GenreTile = (genre: Genre) => {
   return (
-    <View style={styles.bubble}>
-      <Text style={styles.genreText}>{genre.name}</Text>
+    <View style={styles.container}>
+      <View style={styles.bubble}>
+        <Text style={styles.genreText}>{genre.name}</Text>
+      </View>
     </View>
   );
 };
@@ -13,6 +15,9 @@ const GenreTile = (genre: Genre) => {
 export default GenreTile;
 
 const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 10,
+  },
   genreText: {
     paddingHorizontal: 10,
     paddingVertical: 2,
