@@ -1,9 +1,9 @@
-import { Button, StyleSheet, TextInput } from "react-native";
-
-import EditScreenInfo from "@components/EditScreenInfo";
-import { Text, View } from "@components/Themed";
+import { View, Text } from "react-native";
+import React from "react";
 import { Redirect } from "expo-router";
 
-export default function TabOneScreen() {
-  return <Redirect href={"/profile"} />;
-}
+const index = () => {
+  return <Redirect href="/(tabs)" />;
+};
+
+export default index;

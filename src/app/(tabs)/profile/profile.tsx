@@ -1,10 +1,8 @@
-import { View, Text, FlatList, Button, TextInput, StyleSheet, Platform } from "react-native";
+import { View, Text, FlatList, Button, TextInput, StyleSheet, Platform, Dimensions } from "react-native";
 import { useState } from "react";
 import { useUserMovieData } from "@providers/UserMovieDataProvider";
 import { useMovieCacheProvider } from "@/src/providers/MovieCacheProvider";
-import { Movie } from "@/types";
 import MovieListItem from "@components/MovieListItem";
-import { dummy_movies } from "@assets/data/dummy_data";
 
 const ProfileScreen = () => {
   const userMovieData = useUserMovieData();
@@ -25,7 +23,7 @@ const ProfileScreen = () => {
         data={Array.from(userMovieData.likedMovies)}
         renderItem={({ item }) => <MovieListItem movieId={item} />}
         numColumns={Platform.OS === "web" ? 3 : 3}
-        contentContainerStyle={{ gap: 10, paddingHorizontal: Platform.OS === "web" ? 400 : 10 }}
+        contentContainerStyle={{ gap: 10, paddingHorizontal: Platform.OS === "web" ? Dimensions.get("window").width / 8 : 10 }}
         columnWrapperStyle={{ gap: 10 }}
       />
 

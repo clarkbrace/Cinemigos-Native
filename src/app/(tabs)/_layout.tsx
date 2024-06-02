@@ -32,15 +32,25 @@ export default function TabLayout() {
         options={{
           title: "Profile",
           headerShown: false, // Prevent menu header from being shown
-          tabBarIcon: ({ color }) => <Ionicons name="person" size={24} color="black" />,
+          tabBarIcon: ({ color }) => <Ionicons name="person" size={24} color={color} />,
         }}
       />
 
       <Tabs.Screen
-        name="two"
+        name="home"
         options={{
-          title: "Tab Two",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: "Home",
+          headerShown: false,
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+        }}
+      />
+
+      <Tabs.Screen
+        name="social"
+        options={{
+          title: "Social",
+          headerShown: false,
+          tabBarIcon: ({ color }) => <Ionicons name="people" size={24} color={color} />,
         }}
       />
     </Tabs>

@@ -1,12 +1,12 @@
 import React from "react";
 import { Stack } from "expo-router";
 
-const ProfileStack = () => {
+const HomeStack = () => {
   return (
     <Stack>
-      <Stack.Screen name="profile" />
+      <Stack.Screen name="home" />
     </Stack>
   );
 };
 
-export default ProfileStack;
+export default HomeStack;
