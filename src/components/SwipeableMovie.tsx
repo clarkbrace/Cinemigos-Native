@@ -2,10 +2,13 @@ import { View, Text, StyleSheet, Dimensions } from "react-native";
 import React from "react";
 import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from "react-native-reanimated";
+import useMovieManager from "@hooks/useMovie";
 
-const SwipeableMovie = () => {
+const SwipeableMovie = (movieId: number) => {
   const pressed = useSharedValue<boolean>(false);
   const offset = useSharedValue<number>(0);
+
+  const { movie, loading, error } = useMovieManager(movieId);
 
   const pan = Gesture.Pan()
     .onBegin(() => {
