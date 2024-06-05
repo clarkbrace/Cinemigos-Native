@@ -28,7 +28,7 @@ export default function TabLayout() {
       <Tabs.Screen name="index" options={{ href: null }} />
 
       <Tabs.Screen
-        name="profile"
+        name="Profile"
         options={{
           title: "Profile",
           headerShown: false, // Prevent menu header from being shown
@@ -37,7 +37,7 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="home"
+        name="Home"
         options={{
           title: "Home",
           headerShown: false,
@@ -46,7 +46,7 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="social"
+        name="Social"
         options={{
           title: "Social",
           headerShown: false,

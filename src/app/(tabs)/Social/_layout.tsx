@@ -4,7 +4,7 @@ import { Stack } from "expo-router";
 const SocialStack = () => {
   return (
     <Stack>
-      <Stack.Screen name="Social" />
+      <Stack.Screen name="social" />
     </Stack>
   );
 };

@@ -13,6 +13,7 @@ type UserMovieDataType = {
   addMovieToDisliked: (movie: number) => void;
   removeMovieFromLiked: (movie: number) => void;
   removeMovieFromDisliked: (movie: number) => void;
+  hasUserSeenMovie: (movie: number) => boolean;
 };
 
 // Create UserMovieDataContext with Default context values
@@ -23,12 +24,13 @@ export const UserMovieDataContext = createContext<UserMovieDataType>({
   addMovieToDisliked: () => {},
   removeMovieFromLiked: () => {},
   removeMovieFromDisliked: () => {},
+  hasUserSeenMovie: (number) => false,
 });
 
 // Wrapper component that allows access to stored movie data
 const UserMovieDataProvider = ({ children }: PropsWithChildren) => {
   // Stored liked movie data
-  const [likedMovies, setLikedMovies] = useState(new Set<number>([5559, 671, 157336, 593643, 105, 165, 196, 1236345]));
+  const [likedMovies, setLikedMovies] = useState(new Set<number>([671, 157336, 593643, 105, 165, 196, 1236345]));
 
   // Stored disliked movie data
   const [dislikedMovies, setDisLikedMovies] = useState(new Set<number>());
@@ -95,6 +97,10 @@ const UserMovieDataProvider = ({ children }: PropsWithChildren) => {
     console.log(`[User Movie Data] Movie id: ${movieId} was removed from disliked movies`);
   };
 
+  const hasUserSeenMovie = (movieId: number) => {
+    return likedMovies.has(movieId) || dislikedMovies.has(movieId);
+  };
+
   // Create context provider to be wrapped around components that need access to User Movie Data
   return (
     <UserMovieDataContext.Provider
@@ -105,6 +111,7 @@ const UserMovieDataProvider = ({ children }: PropsWithChildren) => {
         addMovieToDisliked,
         removeMovieFromLiked,
         removeMovieFromDisliked,
+        hasUserSeenMovie,
       }}
     >
       {children}

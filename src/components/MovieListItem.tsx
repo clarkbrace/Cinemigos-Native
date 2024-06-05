@@ -15,18 +15,20 @@ const MovieListItem = ({ movieId }: MovieListItemProps) => {
   const { movie, loading, error } = useMovieManager(movieId);
 
   return (
-    <Link href={`/profile/${movieId}`} asChild>
+    <Link href={`/Profile/${movieId}`} asChild>
       <Pressable style={styles.container}>
         {loading ? (
           <ActivityIndicator size="large" />
         ) : error ? (
           <Text> Error Loading Movie </Text>
-        ) : movie !== undefined && (
+        ) : (
+          movie !== undefined && (
             <ImageBackground
               source={{ uri: `https://image.tmdb.org/t/p/original${movie.poster_path}` }}
               resizeMode="cover"
               style={styles.image}
             />
+          )
         )}
       </Pressable>
     </Link>

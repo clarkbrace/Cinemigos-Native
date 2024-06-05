@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Button, TextInput, StyleSheet, Platform, Dimensions } from "react-native";
+import { View, Text, FlatList, Button, TextInput, StyleSheet, Platform, Dimensions, Pressable } from "react-native";
 import { useState } from "react";
 import { useUserMovieData } from "@providers/UserMovieDataProvider";
 import { useMovieCacheProvider } from "@/src/providers/MovieCacheProvider";
@@ -23,11 +23,14 @@ const ProfileScreen = () => {
         data={Array.from(userMovieData.likedMovies)}
         renderItem={({ item }) => <MovieListItem movieId={item} />}
         numColumns={Platform.OS === "web" ? 3 : 3}
-        contentContainerStyle={{ gap: 10, paddingHorizontal: Platform.OS === "web" ? Dimensions.get("window").width / 8 : 10 }}
+        contentContainerStyle={{
+          gap: 10,
+          paddingHorizontal: Platform.OS === "web" ? Dimensions.get("window").width / 8 : 10,
+        }}
         columnWrapperStyle={{ gap: 10 }}
       />
 
-      <Button onPress={() => addMovie(Idvalue)} title="Add Movie" />
+      <Pressable onPress={() => addMovie(Idvalue)} style={styles.button} />
       <TextInput
         numberOfLines={1}
         editable
@@ -44,5 +47,11 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  button: {
+    width: "100%",
+    height: 30,
+    flex: 1,
+    backgroundColor: "blue",
   },
 });

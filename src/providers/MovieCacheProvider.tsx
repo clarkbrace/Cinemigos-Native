@@ -35,9 +35,9 @@ const MovieCacheProvider = ({ children }: PropsWithChildren) => {
     if (cachedMovieIds.current.length >= CACHE_SIZE) {
       const leastCalledMovieId = cachedMovieIds.current.pop();
       // Remove movie from cache
-      if (leastCalledMovieId) {
-        console.log(`[Movie Cache] Removing ${movieCache.current.get(leastCalledMovieId)?.title} from cache`);
+      if (leastCalledMovieId !== undefined) {
         movieCache.current.delete(leastCalledMovieId);
+        console.log(`[Movie Cache] Removing ${movieCache.current.get(leastCalledMovieId)?.title} from cache`);
       }
     }
 
