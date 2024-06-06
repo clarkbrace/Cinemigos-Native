@@ -4,7 +4,7 @@ import { Movie } from "@/types";
 import { ApiResponse, getTheMovieDBMovieById } from "@/src/models/fetchMovie"; // Adjust path as necessary
 import useMovieManager from "@hooks/useMovie";
 import { Link } from "expo-router";
-import MovieDetailScreen from "../app/(tabs)/Profile/[movieId]";
+import MovieDetailScreen from "../app/(tabs)/profile/[movieId]";
 
 type MovieListItemProps = {
   movieId: number;
