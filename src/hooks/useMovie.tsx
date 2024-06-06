@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext } from "react";
 import { useMovieCacheProvider } from "@providers/MovieCacheProvider";
 import { useUserMovieData } from "@providers/UserMovieDataProvider";
-import { getTheMovieDBMovieById } from "@models/loadMovie";
-import { ApiResponse } from "@models/loadMovie";
+import { getTheMovieDBMovieById } from "@/src/models/fetchMovie";
+import { ApiResponse } from "@/src/models/fetchMovie";
 import { Movie } from "@/types";
 
 const useMovieManager = (movieId: number) => {
@@ -30,10 +30,9 @@ const useMovieManager = (movieId: number) => {
         const movieReq: ApiResponse = await getTheMovieDBMovieById(movieId);
         if (movieReq.sucsess && movieReq.movie) {
           setMovie(movieReq.movie);
-          
+
           // Update cache
           movieCacheProvider.addMovieToCache(movieReq.movie);
-          
         } else {
           setError(`Movie with ID ${movieId} not found`);
           console.log(`[Use Movie] Error: Movie with ID ${movieId} not found`);
@@ -45,7 +44,7 @@ const useMovieManager = (movieId: number) => {
         setLoading(false);
       }
     };
-    
+
     if (movieCacheProvider.isMovieInCache(movieId)) {
       console.log(`[Use Movie] Movie id: ${movieId} in Cache `);
       setMovie(movieCacheProvider.getMovieFromCache(movieId));

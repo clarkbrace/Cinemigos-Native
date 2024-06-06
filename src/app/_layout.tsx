@@ -7,8 +7,8 @@ import { useEffect } from "react";
 import "react-native-reanimated";
 import UserMovieDataProvider, { useUserMovieData } from "@providers/UserMovieDataProvider";
 import MovieCacheProvider from "@/src/providers/MovieCacheProvider";
-
 import { useColorScheme } from "@components/useColorScheme";
+import MovieStackDataProvider from "@providers/MovieStackProvider";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -24,8 +24,7 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-
-  // Font and 
+  // Font and
   const [loaded, error] = useFonts({
     SpaceMono: require("@assets/fonts/SpaceMono-Regular.ttf"),
     LexendDecaBold: require("@/assets/fonts/Lexend Deca Bold.ttf"),
@@ -61,14 +60,16 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <MovieCacheProvider>
-        <UserMovieDataProvider>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-          </Stack>
-        </UserMovieDataProvider>
-      </MovieCacheProvider>
+      <MovieStackDataProvider>
+        <MovieCacheProvider>
+          <UserMovieDataProvider>
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+            </Stack>
+          </UserMovieDataProvider>
+        </MovieCacheProvider>
+      </MovieStackDataProvider>
     </ThemeProvider>
   );
 }

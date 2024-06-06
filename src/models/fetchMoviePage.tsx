@@ -17,7 +17,7 @@ export async function getTheMovieDBPage(pageNumber: number): Promise<ApiResponse
       include_adult: "false",
       include_video: "true",
       language: "en-US",
-      page: "1",
+      page: pageNumber.toString(),
       sort_by: "popularity.desc",
     },
     headers: {
@@ -31,7 +31,7 @@ export async function getTheMovieDBPage(pageNumber: number): Promise<ApiResponse
     console.log(`[Load Page] Sucsessful call to movie page ${pageNumber}`);
     return { sucsess: true, discoverMovies: responce.results };
   } catch (error: any) {
-    console.log(`[Load Page] Failed call to movie page ${pageNumber}`)
+    console.log(`[Load Page] Failed call to movie page ${pageNumber}`);
     return { sucsess: false, error: error.message };
   }
 }

@@ -7,7 +7,7 @@ interface Props {
   onClick: () => void;
 }
 
-const TextButton = (props: Props) => {
+const TestButton = (props: Props) => {
   return (
     <Pressable onPress={props.onClick} style={styles.container}>
       <Text>{props.title}</Text>
@@ -15,7 +15,7 @@ const TextButton = (props: Props) => {
   );
 };
 
-export default TextButton;
+export default TestButton;
 
 const styles = StyleSheet.create({
   container: {

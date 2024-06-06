@@ -1,4 +1,4 @@
-import { View, Text, FlatList, Button, TextInput, StyleSheet, Platform, Dimensions, Pressable } from "react-native";
+import { View, Text, FlatList, Button, StyleSheet, Platform, Dimensions, Pressable, TextInput } from "react-native";
 import { useState } from "react";
 import { useUserMovieData } from "@providers/UserMovieDataProvider";
 import { useMovieCacheProvider } from "@/src/providers/MovieCacheProvider";
@@ -11,14 +11,9 @@ const ProfileScreen = () => {
   const addMovie = (movieId: number) => {
     userMovieData.addMovieToLiked(movieId);
   };
-  const movieCache = useMovieCacheProvider();
 
   return (
     <View style={styles.container}>
-      <Text>Movies:</Text>
-
-      {/* <Button onPress={() => movieCache.printCache()} title="Cache contence" /> */}
-
       <FlatList
         data={Array.from(userMovieData.likedMovies)}
         renderItem={({ item }) => <MovieListItem movieId={item} />}
@@ -29,15 +24,6 @@ const ProfileScreen = () => {
         }}
         columnWrapperStyle={{ gap: 10 }}
       />
-
-      <Pressable onPress={() => addMovie(Idvalue)} style={styles.button} />
-      <TextInput
-        numberOfLines={1}
-        editable
-        onChangeText={(text) => setIdValue(Number(text))}
-        value={Idvalue.toString()}
-      />
-      {/* <Button onPress={addBeeMovie} title="Add Bee Movie" /> */}
     </View>
   );
 };
@@ -47,6 +33,7 @@ export default ProfileScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 5,
   },
   button: {
     width: "100%",

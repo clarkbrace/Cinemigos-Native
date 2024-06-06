@@ -1,8 +1,7 @@
 import { View, Text, StyleSheet, ImageBackground, ActivityIndicator, Button, Image, Pressable } from "react-native";
 import { useEffect, useState } from "react";
 import { Movie } from "@/types";
-import { getMovieById } from "@services/movieServices"; // Adjust path as necessary
-import { ApiResponse, getTheMovieDBMovieById } from "@models/loadMovie"; // Adjust path as necessary
+import { ApiResponse, getTheMovieDBMovieById } from "@/src/models/fetchMovie"; // Adjust path as necessary
 import useMovieManager from "@hooks/useMovie";
 import { Link } from "expo-router";
 import MovieDetailScreen from "../app/(tabs)/Profile/[movieId]";

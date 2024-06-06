@@ -39,12 +39,12 @@ const SwipeableMovie = (props: Props) => {
     })
     .onFinalize(() => {
       let movieSwiped = false;
-      if (offset.value > screenWidth / 2) {
+      if (offset.value > screenWidth / 4) {
         console.log(`[Swipeable Movie] Swiped Right (like) on ${props.movieId}`);
         runOnJS(userMovieData.addMovieToLiked)(props.movieId);
         runOnJS(movieStackProvider.popMovieStack)();
         movieSwiped = true;
-      } else if (offset.value < -screenWidth / 2) {
+      } else if (offset.value < -screenWidth / 4) {
         console.log(`[Swipeable Movie] Swiped Left (dislike) on ${props.movieId}`);
         runOnJS(userMovieData.addMovieToDisliked)(props.movieId);
         runOnJS(movieStackProvider.popMovieStack)();
