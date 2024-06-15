@@ -14,7 +14,7 @@ const MovieListItem = ({ movieId }: MovieListItemProps) => {
   const { movie, loading, error } = useMovieManager(movieId);
 
   return (
-    <Link href={`/Profile/${movieId}`} asChild>
+    <Link href={`/profile/${movieId}`} asChild>
       <Pressable style={styles.container}>
         {loading ? (
           <ActivityIndicator size="large" />

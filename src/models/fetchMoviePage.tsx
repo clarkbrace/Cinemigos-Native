@@ -1,5 +1,6 @@
 import axios from "axios";
 import { DiscoverMovie, DiscoverMovieResponse } from "@/types";
+import { useDiscoverMovieQueryParams } from "@providers/DiscoverMovieQueryProvider";
 
 // Currently default parameters
 
@@ -10,16 +11,12 @@ interface ApiResponse {
 }
 
 export async function getTheMovieDBPage(pageNumber: number): Promise<ApiResponse> {
+  const discoverMovieParams = useDiscoverMovieQueryParams();
+
   const options = {
     method: "GET",
     url: "https://api.themoviedb.org/3/discover/movie",
-    params: {
-      include_adult: "false",
-      include_video: "true",
-      language: "en-US",
-      page: pageNumber.toString(),
-      sort_by: "popularity.desc",
-    },
+    params: discoverMovieParams.discoverQuery,
     headers: {
       accept: "application/json",
       Authorization: `Bearer ${process.env.EXPO_PUBLIC_THE_MOVIE_DB_ACCESS_TOKEN}`,
