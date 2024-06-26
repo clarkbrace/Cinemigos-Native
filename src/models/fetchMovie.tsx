@@ -1,13 +1,15 @@
 import axios from "axios";
 import { Movie } from "@/types";
 
-export interface ApiResponse {
+export interface MovieResponse {
   sucsess: boolean;
   movie?: Movie;
   error?: string;
 }
 
-export async function getTheMovieDBMovieById(movieId: number): Promise<ApiResponse> {
+export async function getTheMovieDBMovieById(
+  movieId: number
+): Promise<MovieResponse> {
   const options = {
     method: "GET",
     url: `https://api.themoviedb.org/3/movie/${movieId}`,

@@ -1,115 +1,124 @@
-import { Children, createContext, PropsWithChildren, useContext, useState } from "react";
+import {
+  Children,
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { MovieGenres } from "@/types";
+import { useDiscoverMovieQueryParams } from "./DiscoverMovieQueryProvider";
+import { useMovieStackDataProvider } from "./MovieStackProvider";
 
-// type GenreSelectionType : {
-//   Action: boolean;
-//   Adventure: boolean;
-//   Animation: boolean;
-//   Comedy: boolean;
-//   Crime: boolean;
-//   Documentary: boolean;
-//   Drama: boolean;
-//   Family: boolean;
-//   Fantasy: boolean;
-//   History: boolean;
-//   Horror: boolean;
-//   Music: boolean;
-//   Mystery: boolean;
-//   Romance: boolean;
-//   Science_Fiction: boolean;
-//   TV_Movie: boolean;
-//   Thriller: boolean;
-//   War: boolean;
-//   Western: boolean;
-// };
-
-// type GenreSelectionType = {
-//   [MovieGenres.Action]: boolean;
-//   [MovieGenres.Adventure]: boolean;
-//   [MovieGenres.Animation]: boolean;
-//   [MovieGenres.Comedy]: boolean;
-//   [MovieGenres.Crime]: boolean;
-//   [MovieGenres.Documentary]: boolean;
-//   [MovieGenres.Drama]: boolean;
-//   [MovieGenres.Family]: boolean;
-//   [MovieGenres.Fantasy]: boolean;
-//   [MovieGenres.History]: boolean;
-//   [MovieGenres.Horror]: boolean;
-//   [MovieGenres.Music]: boolean;
-//   [MovieGenres.Mystery]: boolean;
-//   [MovieGenres.Romance]: boolean;
-//   [MovieGenres.Science_Fiction]: boolean;
-//   [MovieGenres.TV_Movie]: boolean;
-//   [MovieGenres.Thriller]: boolean;
-//   [MovieGenres.War]: boolean;
-//   [MovieGenres.Western]: boolean;
-// };
-
-type GenreSelectionType = {
-  [key in MovieGenres]: boolean;
+type GenreSelectionControlerType = {
+  changeGenreSelection: (genre: MovieGenres, selection: boolean) => void;
+  getGenreSelection: () => GenreSelectionType;
 };
 
-export const GenreSelectionContext = createContext<GenreSelectionType>({
-  [MovieGenres.Action]: false,
-  [MovieGenres.Adventure]: false,
-  [MovieGenres.Animation]: false,
-  [MovieGenres.Comedy]: false,
-  [MovieGenres.Crime]: false,
-  [MovieGenres.Documentary]: false,
-  [MovieGenres.Drama]: false,
-  [MovieGenres.Family]: false,
-  [MovieGenres.Fantasy]: false,
-  [MovieGenres.History]: false,
-  [MovieGenres.Horror]: false,
-  [MovieGenres.Music]: false,
-  [MovieGenres.Mystery]: false,
-  [MovieGenres.Romance]: false,
-  [MovieGenres.Science_Fiction]: false,
-  [MovieGenres.TV_Movie]: false,
-  [MovieGenres.Thriller]: false,
-  [MovieGenres.War]: false,
-  [MovieGenres.Western]: false,
-});
+export const GenreSelectionContext =
+  createContext<GenreSelectionControlerType | null>(null);
 
 const GenreSelectionProvider = ({ children }: PropsWithChildren) => {
-  const [genreSelection, setGenreSelection] = useState<GenreSelectionType>(defaultGenreSelection);
+  // State
+  const discoverMovieQueryProvider = useDiscoverMovieQueryParams();
+  const movieStackData = useMovieStackDataProvider();
+  const [genreSelection, setGenreSelection] = useState<GenreSelectionType>(
+    defaultGenreSelection
+  );
 
+  // Changes the users genre selection
   const changeGenreSelection = (genre: MovieGenres, selection: boolean) => {
-    const newGenreSelection = genreSelection as GenreSelectionType;
-    newGenreSelection[genre] = selection;
-    setGenreSelection(newGenreSelection);
-    console.log(`[Genre Selection Provider] Udated genre selection ${genre} to ${selection}`);
+    const newGenreSelection = MovieGenres[genre] as keyof typeof MovieGenres;
+    setGenreSelection((prevState) => ({
+      ...prevState,
+      [newGenreSelection]: selection,
+    }));
+
+    console.log(
+      `[Genre Selection Provider] Updated genre selection ${genre} to ${selection}`
+    );
   };
 
-  const areGenresSelected = () => {
+  // Getter for the current genre selection
+  const getGenreSelection = () => {
     return genreSelection;
   };
 
-  return <GenreSelectionContext.Provider value={genreSelection}>{children}</GenreSelectionContext.Provider>;
+  // Formates genre selection in query format for the movie db Ex: (22 | 25), (12 & 33) 
+  const formatGenreSelection = () => {
+    let formattedSelection = "";
+
+    for (const key in genreSelection) {
+      if (genreSelection[key]) {
+        formattedSelection += `${MovieGenres[key]} | `;
+      }
+    }
+
+    if (formattedSelection === "") {
+      return "";
+    }
+
+    // Remove last of | symbol
+    return formattedSelection.slice(0, -2);
+  };
+
+  // UpdateDiscoverMovieQuery with new genre selection
+  useEffect(() => {
+    const newFormattedString = formatGenreSelection();
+    console.log(
+      `[Genre Selection Provider] New genre selection: ${newFormattedString}`
+    );
+
+    // Update discover query to reflect change in genre
+    discoverMovieQueryProvider.setGenreSelection(newFormattedString);
+    console.log(`[Genre Selection Provider] Resetting due to new genre`);
+    movieStackData.resetStack();
+  }, [genreSelection]);
+
+  return (
+    <GenreSelectionContext.Provider
+      value={{ changeGenreSelection, getGenreSelection }}
+    >
+      {children}
+    </GenreSelectionContext.Provider>
+  );
 };
 
 export default GenreSelectionProvider;
 
-export const useGenreSelction = () => useContext(GenreSelectionContext);
+export const useGenreSelction = () => {
+  const genreSelectionContext = useContext(GenreSelectionContext);
+
+  if (!genreSelectionContext) {
+    throw new Error(
+      `useGenre Selection must be used within GenreSelection Provider`
+    );
+  }
+  return genreSelectionContext;
+};
+
+type GenreSelectionType = {
+  [key in keyof typeof MovieGenres]: boolean;
+};
 
 const defaultGenreSelection: GenreSelectionType = {
-  [MovieGenres.Action]: false,
-  [MovieGenres.Adventure]: false,
-  [MovieGenres.Animation]: false,
-  [MovieGenres.Comedy]: false,
-  [MovieGenres.Crime]: false,
-  [MovieGenres.Documentary]: false,
-  [MovieGenres.Drama]: false,
-  [MovieGenres.Family]: false,
-  [MovieGenres.Fantasy]: false,
-  [MovieGenres.History]: false,
-  [MovieGenres.Horror]: false,
-  [MovieGenres.Music]: false,
-  [MovieGenres.Mystery]: false,
-  [MovieGenres.Romance]: false,
-  [MovieGenres.Science_Fiction]: false,
-  [MovieGenres.TV_Movie]: false,
-  [MovieGenres.Thriller]: false,
-  [MovieGenres.War]: false,
-  [MovieGenres.Western]: false,
+  Action: false,
+  Adventure: false,
+  Animation: false,
+  Comedy: false,
+  Crime: false,
+  Documentary: false,
+  Drama: false,
+  Family: false,
+  Fantasy: false,
+  History: false,
+  Horror: false,
+  Music: false,
+  Mystery: false,
+  Romance: false,
+  Science_Fiction: false,
+  TV_Movie: false,
+  Thriller: false,
+  War: false,
+  Western: false,
 };

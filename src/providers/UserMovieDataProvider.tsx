@@ -24,13 +24,15 @@ export const UserMovieDataContext = createContext<UserMovieDataType>({
   addMovieToDisliked: () => {},
   removeMovieFromLiked: () => {},
   removeMovieFromDisliked: () => {},
-  hasUserSeenMovie: (number) => false,
+  hasUserSeenMovie: (movie: number) => false,
 });
 
 // Wrapper component that allows access to stored movie data
 const UserMovieDataProvider = ({ children }: PropsWithChildren) => {
   // Stored liked movie data
-  const [likedMovies, setLikedMovies] = useState(new Set<number>([671, 157336, 593643, 105, 165, 196, 1236345]));
+  const [likedMovies, setLikedMovies] = useState(
+    new Set<number>([671, 157336, 593643, 105, 165, 196, 1236345])
+  );
 
   // Stored disliked movie data
   const [dislikedMovies, setDisLikedMovies] = useState(new Set<number>());
@@ -38,27 +40,35 @@ const UserMovieDataProvider = ({ children }: PropsWithChildren) => {
   const addMovieToLiked = (movieId: number) => {
     // Ensure liked doesn't alreay have movie
     if (likedMovies.has(movieId)) {
-      console.log(`[User Movie Data] Movie id: ${movieId} already present in liked movies`);
+      console.log(
+        `[User Movie Data] Movie id: ${movieId} already present in liked movies`
+      );
       return;
     }
 
     // Remove from disliked if present
     if (dislikedMovies.has(movieId)) {
       removeMovieFromDisliked(movieId);
-      console.log(`[User Movie Data] Removing movie id: ${movieId} from disliked --v`);
+      console.log(
+        `[User Movie Data] Removing movie id: ${movieId} from disliked --v`
+      );
     }
 
     const newSet = new Set(likedMovies);
     newSet.add(movieId);
     setLikedMovies(newSet);
-    console.log(`[User Movie Data] Addded movie id: ${movieId} to liked movies`);
+    console.log(
+      `[User Movie Data] Addded movie id: ${movieId} to liked movies`
+    );
 
     // Update cache
   };
 
   const removeMovieFromLiked = (movieId: number) => {
     if (!likedMovies.has(movieId)) {
-      console.log(`[User Movie Data] Movie id: ${movieId} was not present in liked movies on atempted removal`);
+      console.log(
+        `[User Movie Data] Movie id: ${movieId} was not present in liked movies on atempted removal`
+      );
       return;
     }
     const newSet = new Set(likedMovies);
@@ -70,31 +80,41 @@ const UserMovieDataProvider = ({ children }: PropsWithChildren) => {
   const addMovieToDisliked = (movieId: number) => {
     // Make sure disliked movies doesent alreay have movie
     if (dislikedMovies.has(movieId)) {
-      console.log(`[User Movie Data] Movie id: ${movieId} is already present in disliked movies`);
+      console.log(
+        `[User Movie Data] Movie id: ${movieId} is already present in disliked movies`
+      );
       return;
     }
 
     // Make sure liked movies doesn't have movie
     if (likedMovies.has(movieId)) {
-      console.log(`[User Movie Data] Removing movie id: ${movieId} from liked --v`);
+      console.log(
+        `[User Movie Data] Removing movie id: ${movieId} from liked --v`
+      );
       removeMovieFromLiked(movieId);
     }
 
     const newSet = new Set(dislikedMovies);
     newSet.add(movieId);
     setDisLikedMovies(newSet);
-    console.log(`[User Movie Data] Adding movie id: ${movieId} to disliked movies`);
+    console.log(
+      `[User Movie Data] Adding movie id: ${movieId} to disliked movies`
+    );
   };
 
   const removeMovieFromDisliked = (movieId: number) => {
     if (!dislikedMovies.has(movieId)) {
-      console.log(`[User Movie Data] Movie id: ${movieId} was not present in disliked on atempted removal`);
+      console.log(
+        `[User Movie Data] Movie id: ${movieId} was not present in disliked on atempted removal`
+      );
       return;
     }
     const newSet = new Set(dislikedMovies);
     newSet.delete(movieId);
     setDisLikedMovies(newSet);
-    console.log(`[User Movie Data] Movie id: ${movieId} was removed from disliked movies`);
+    console.log(
+      `[User Movie Data] Movie id: ${movieId} was removed from disliked movies`
+    );
   };
 
   const hasUserSeenMovie = (movieId: number) => {
@@ -122,4 +142,14 @@ const UserMovieDataProvider = ({ children }: PropsWithChildren) => {
 export default UserMovieDataProvider;
 
 // Export useUserMovieData as an easyier means to access User Movie Data Context as a consumer component
-export const useUserMovieData = () => useContext(UserMovieDataContext);
+export const useUserMovieData = () => {
+  const userMovieDataContext = useContext(UserMovieDataContext);
+
+  if (!userMovieDataContext) {
+    throw new Error(
+      `useUserMovieData context must be used within UserMovieDataProvider provider`
+    );
+  }
+
+  return userMovieDataContext;
+};

@@ -2,21 +2,23 @@ import { useState, useEffect, useContext } from "react";
 import { useMovieCacheProvider } from "@providers/MovieCacheProvider";
 import { useUserMovieData } from "@providers/UserMovieDataProvider";
 import { getTheMovieDBMovieById } from "@/src/models/fetchMovie";
-import { ApiResponse } from "@/src/models/fetchMovie";
+import { MovieResponse } from "@/src/models/fetchMovie";
 import { Movie } from "@/types";
 
 const useMovieManager = (movieId: number) => {
   const userMovieData = useUserMovieData();
   const movieCacheProvider = useMovieCacheProvider();
 
+  if (!userMovieData || !movieCacheProvider) {
+    throw new Error(
+      `useMovieManager must be used within both UserMovieProvider and MovieCacheProvider`
+    );
+  }
+
   // Load Movie Data
   const [movie, setMovie] = useState<Movie | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-
-  if (!userMovieData || !movieCacheProvider) {
-    throw new Error(`useMovieManager must be used within both UserMovieProvider and MovieCacheProvider`);
-  }
 
   useEffect(() => {
     setLoading(true);
@@ -27,15 +29,21 @@ const useMovieManager = (movieId: number) => {
       console.log(`[Use Movie] Loading movie id:  ${movieId}`);
 
       try {
-        const movieReq: ApiResponse = await getTheMovieDBMovieById(movieId);
-        if (movieReq.sucsess && movieReq.movie) {
-          setMovie(movieReq.movie);
+        const movieResponce: MovieResponse = await getTheMovieDBMovieById(
+          movieId
+        );
+        if (movieResponce.sucsess && movieResponce.movie) {
+          setMovie(movieResponce.movie);
 
           // Update cache
-          movieCacheProvider.addMovieToCache(movieReq.movie);
+          movieCacheProvider.addMovieToCache(movieResponce.movie);
         } else {
-          setError(`Movie with ID ${movieId} not found`);
-          console.log(`[Use Movie] Error: Movie with ID ${movieId} not found`);
+          setError(
+            `Movie with ID ${movieId} was loaded but no movie was found`
+          );
+          console.log(
+            `[Use Movie] Error: Movie with ID ${movieId} was loaded but no movie was found`
+          );
         }
       } catch (error) {
         setError(`[Use Movie]  Failed to fetch movie: ${error}`);
@@ -53,24 +61,6 @@ const useMovieManager = (movieId: number) => {
       loadMovie(); // Here need to return value
     }
   }, [movieId]);
-
-  // const getMovieById = async (movieId: number) => {
-  // if (movieCacheProvider.isMovieInCache(movieId)) {
-  //   return movieCacheProvider.getMovieFromCache(movieId);
-  // }
-
-  // Atempt to load movie if not present in cache
-  // const movieCall: ApiResponse = await getTheMovieDBMovieById(movieId);
-  // return movieCall;
-
-  // // Update cache and return if movie sucsessfully loads
-  // if (movieCall.sucsess && movieCall.movie) {
-  //   movieCacheProvider.addMovieToCache(movieCall.movie);
-  //   return movieCall.movie;
-  // } else {
-  //   console.error(`Failed to load movie ${movieId}: ${movieCall.error}`);
-  // }
-  // };
 
   return { loading, movie, error };
 };

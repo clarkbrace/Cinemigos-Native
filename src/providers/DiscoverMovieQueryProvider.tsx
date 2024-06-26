@@ -1,47 +1,59 @@
-import { default_query, DiscoverMovieQueryParams } from "@/types";
-import { Children, createContext, PropsWithChildren, useContext, useState } from "react";
+import { DiscoverMovieQueryParams } from "@/types";
+import { createContext, PropsWithChildren, useContext, useRef } from "react";
+import { default_query } from "@/types";
+import _ from "lodash";
 
 type DiscoverMovieQuery = {
-  discoverQuery: DiscoverMovieQueryParams;
+  getDiscoverQuery: () => DiscoverMovieQueryParams;
   updateIncludeAdult: (include_adult: boolean) => void;
-  increasePageNumber: () => void;
+  setGenreSelection: (genres: string) => void;
 };
 
-export const DiscoverMovieQueryContext = createContext<DiscoverMovieQuery>({
-  discoverQuery: default_query,
-  updateIncludeAdult: (include_adult: boolean) => {},
-  increasePageNumber: () => {},
-});
+export const DiscoverMovieQueryContext =
+  createContext<DiscoverMovieQuery | null>(null);
 
 const DiscoverMovieQueryProvider = ({ children }: PropsWithChildren) => {
-  const [discoverQuery, setDiscoverQuery] = useState(default_query);
-  const [pageNumber, setPageNumber] = useState(1);
-
-  // Maybe generalise to accept list of params to update?
+  // State
+  const discoverQuery = useRef(default_query);
   const updateIncludeAdult = (include_adult: boolean) => {
-    // setDiscoverQuery((discoverQuery.include_adult = include_adult));
-    const newQuery = discoverQuery as DiscoverMovieQueryParams;
-    newQuery.include_adult = include_adult;
-    setDiscoverQuery(newQuery);
+    discoverQuery.current.include_adult = include_adult;
   };
 
+  // Increases current page number
   const increasePageNumber = () => {
-    setPageNumber(pageNumber + 1);
-    updatePageNumber();
+    console.log("increaseing page count");
+    if (!discoverQuery.current.page) {
+      discoverQuery.current.page = 1;
+      return;
+    }
+    discoverQuery.current.page += 1;
   };
 
-  const updatePageNumber = () => {
-    const newQuery = discoverQuery as DiscoverMovieQueryParams;
-    newQuery.page = pageNumber;
-    setDiscoverQuery(newQuery);
+  // Resets page number
+  const resetPageNumber = () => {
+    discoverQuery.current.page = 1;
+  };
+
+  // Sets new genre selection
+  const setGenreSelection = (newGenreSelection: string) => {
+    discoverQuery.current.with_genres = newGenreSelection;
+    console.log(`[Set Genre Selection]: ${newGenreSelection}`);
+    resetPageNumber();
+  };
+
+  // Returns the users current selection query with all selected parameters
+  const getDiscoverQuery = () => {
+    const query: DiscoverMovieQueryParams = _.cloneDeep(discoverQuery.current);
+    increasePageNumber(); // Increase current page number
+    return query;
   };
 
   return (
     <DiscoverMovieQueryContext.Provider
       value={{
-        discoverQuery,
+        getDiscoverQuery,
         updateIncludeAdult,
-        increasePageNumber,
+        setGenreSelection,
       }}
     >
       {children}
@@ -51,4 +63,14 @@ const DiscoverMovieQueryProvider = ({ children }: PropsWithChildren) => {
 
 export default DiscoverMovieQueryProvider;
 
-export const useDiscoverMovieQueryParams = () => useContext(DiscoverMovieQueryContext);
+export const useDiscoverMovieQueryParams = () => {
+  const context = useContext(DiscoverMovieQueryContext);
+
+  if (!context) {
+    throw new Error(
+      `useDiscoverMovieQueryParams context must be used within Discover Movie Query Provider`
+    );
+  }
+
+  return context;
+};

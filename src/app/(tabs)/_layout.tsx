@@ -9,7 +9,10 @@ import { useClientOnlyValue } from "@components/useClientOnlyValue";
 import { Ionicons } from "@expo/vector-icons";
 
 // You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
-function TabBarIcon(props: { name: React.ComponentProps<typeof FontAwesome>["name"]; color: string }) {
+function TabBarIcon(props: {
+  name: React.ComponentProps<typeof FontAwesome>["name"];
+  color: string;
+}) {
   return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
 }
 
@@ -32,7 +35,9 @@ export default function TabLayout() {
         options={{
           title: "Profile",
           headerShown: false, // Prevent menu header from being shown
-          tabBarIcon: ({ color }) => <Ionicons name="person" size={24} color={color} />,
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="person" size={24} color={color} />
+          ),
         }}
       />
 
@@ -50,7 +55,9 @@ export default function TabLayout() {
         options={{
           title: "Social",
           headerShown: false,
-          tabBarIcon: ({ color }) => <Ionicons name="people" size={24} color={color} />,
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="people" size={24} color={color} />
+          ),
         }}
       />
     </Tabs>

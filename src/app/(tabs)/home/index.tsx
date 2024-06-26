@@ -1,9 +1,15 @@
-import { View, Text, StyleSheet, Button, TextInputBase } from "react-native";
-
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  TextInputBase,
+  Platform,
+  Dimensions,
+} from "react-native";
 import SwipeableMovie from "@components/SwipeableMovie";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import MovieCard from "@components/MovieCard";
 import { useMovieStackDataProvider } from "@providers/MovieStackProvider";
+import GenreSelection from "@/src/components/GenreSelection";
 import TestButton from "@/src/components/TestButton";
 
 const STACK_RENDER_DEPTH = 3;
@@ -12,17 +18,34 @@ const HomeScreen = () => {
   const movieStackData = useMovieStackDataProvider();
 
   return (
-    <View style={styles.outer}>
+    <View
+      style={[
+        styles.outer,
+        {
+          paddingHorizontal:
+            Platform.OS === "web" ? Dimensions.get("window").width / 8 : 10,
+        },
+      ]}
+    >
+      <GenreSelection />
       <View style={styles.container}>
-        {movieStackData.movieStack.slice(0, STACK_RENDER_DEPTH).map((movieId, index) => (
-          <SwipeableMovie
-            movieId={movieId.id}
-            key={movieId.id}
-            style={[styles.moiveStack, { zIndex: STACK_RENDER_DEPTH - index }]}
-          />
-        ))}
+        {movieStackData.movieStack.current
+          .slice(0, STACK_RENDER_DEPTH)
+          .map((movieId, index) => (
+            <SwipeableMovie
+              movieId={movieId.id}
+              key={movieId.id}
+              style={[
+                styles.moiveStack,
+                { zIndex: STACK_RENDER_DEPTH - index },
+              ]}
+            />
+          ))}
       </View>
-      {/* <TestButton onClick={() => movieStackData.printStack()} title="Print Stack" /> */}
+      <TestButton
+        title={"Reset Movie Stack"}
+        onClick={movieStackData.printStack}
+      />
     </View>
   );
 };

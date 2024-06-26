@@ -1,11 +1,17 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
-import UserMovieDataProvider, { useUserMovieData } from "@providers/UserMovieDataProvider";
+import UserMovieDataProvider, {
+  useUserMovieData,
+} from "@providers/UserMovieDataProvider";
 import MovieCacheProvider from "@/src/providers/MovieCacheProvider";
 import { useColorScheme } from "@components/useColorScheme";
 import MovieStackDataProvider from "@providers/MovieStackProvider";
@@ -62,20 +68,26 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <GenreSelectionProvider>
-        <DiscoverMovieQueryProvider>
-          <MovieStackDataProvider>
-            <MovieCacheProvider>
-              <UserMovieDataProvider>
+      <UserMovieDataProvider>
+        <MovieCacheProvider>
+          <DiscoverMovieQueryProvider>
+            <MovieStackDataProvider>
+              <GenreSelectionProvider>
                 <Stack>
-                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                  <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+                  <Stack.Screen
+                    name="(tabs)"
+                    options={{ headerShown: false }}
+                  />
+                  <Stack.Screen
+                    name="modal"
+                    options={{ presentation: "modal" }}
+                  />
                 </Stack>
-              </UserMovieDataProvider>
-            </MovieCacheProvider>
-          </MovieStackDataProvider>
-        </DiscoverMovieQueryProvider>
-      </GenreSelectionProvider>
+              </GenreSelectionProvider>
+            </MovieStackDataProvider>
+          </DiscoverMovieQueryProvider>
+        </MovieCacheProvider>
+      </UserMovieDataProvider>
     </ThemeProvider>
   );
 }

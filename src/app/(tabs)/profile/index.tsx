@@ -1,17 +1,10 @@
-import { View, Text, FlatList, Button, StyleSheet, Platform, Dimensions, Pressable, TextInput } from "react-native";
-import { useState } from "react";
+import { View, FlatList, StyleSheet, Platform, Dimensions } from "react-native";
 import { useUserMovieData } from "@providers/UserMovieDataProvider";
-import { useMovieCacheProvider } from "@/src/providers/MovieCacheProvider";
 import MovieListItem from "@components/MovieListItem";
 
 const ProfileScreen = () => {
   const userMovieData = useUserMovieData();
-  const [Idvalue, setIdValue] = useState(5559);
-  // REMOVE LATER
-  const addMovie = (movieId: number) => {
-    userMovieData.addMovieToLiked(movieId);
-  };
-
+  
   return (
     <View style={styles.container}>
       <FlatList
@@ -20,7 +13,8 @@ const ProfileScreen = () => {
         numColumns={Platform.OS === "web" ? 3 : 3}
         contentContainerStyle={{
           gap: 10,
-          paddingHorizontal: Platform.OS === "web" ? Dimensions.get("window").width / 8 : 10,
+          paddingHorizontal:
+            Platform.OS === "web" ? Dimensions.get("window").width / 8 : 10,
         }}
         columnWrapperStyle={{ gap: 10 }}
       />

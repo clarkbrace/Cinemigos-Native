@@ -1,10 +1,18 @@
-import { View, Text, StyleSheet, ImageBackground, ActivityIndicator, Button, Image, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  ActivityIndicator,
+  Button,
+  Image,
+  Pressable,
+} from "react-native";
 import { useEffect, useState } from "react";
 import { Movie } from "@/types";
-import { ApiResponse, getTheMovieDBMovieById } from "@/src/models/fetchMovie"; // Adjust path as necessary
+import { MovieResponse, getTheMovieDBMovieById } from "@/src/models/fetchMovie"; // Adjust path as necessary
 import useMovieManager from "@hooks/useMovie";
 import { Link } from "expo-router";
-import MovieDetailScreen from "../app/(tabs)/profile/[movieId]";
 
 type MovieListItemProps = {
   movieId: number;
@@ -14,7 +22,7 @@ const MovieListItem = ({ movieId }: MovieListItemProps) => {
   const { movie, loading, error } = useMovieManager(movieId);
 
   return (
-    <Link href={`/profile/${movieId}`} asChild>
+    <Link href={`/Profile/${movieId}`} asChild>
       <Pressable style={styles.container}>
         {loading ? (
           <ActivityIndicator size="large" />
@@ -23,7 +31,9 @@ const MovieListItem = ({ movieId }: MovieListItemProps) => {
         ) : (
           movie !== undefined && (
             <ImageBackground
-              source={{ uri: `https://image.tmdb.org/t/p/original${movie.poster_path}` }}
+              source={{
+                uri: `https://image.tmdb.org/t/p/original${movie.poster_path}`,
+              }}
               resizeMode="cover"
               style={styles.image}
             />

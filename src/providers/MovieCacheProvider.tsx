@@ -13,12 +13,9 @@ type MovieCacheFunctions = {
 };
 
 // Default return values
-export const MovieCacheContext = createContext<MovieCacheFunctions>({
-  addMovieToCache: (movie: Movie) => {},
-  isMovieInCache: (movieId: number) => false,
-  getMovieFromCache: (movieId: number) => undefined,
-  printCache: () => {},
-});
+export const MovieCacheContext = createContext<MovieCacheFunctions | null>(
+  null
+);
 
 const MovieCacheProvider = ({ children }: PropsWithChildren) => {
   const cachedMovieIds = useRef<number[]>([]);
@@ -37,7 +34,11 @@ const MovieCacheProvider = ({ children }: PropsWithChildren) => {
       // Remove movie from cache
       if (leastCalledMovieId !== undefined) {
         movieCache.current.delete(leastCalledMovieId);
-        console.log(`[Movie Cache] Removing ${movieCache.current.get(leastCalledMovieId)?.title} from cache`);
+        console.log(
+          `[Movie Cache] Removing ${
+            movieCache.current.get(leastCalledMovieId)?.title
+          } from cache`
+        );
       }
     }
 
@@ -63,7 +64,11 @@ const MovieCacheProvider = ({ children }: PropsWithChildren) => {
     // cachedMovieIds.current = cachedMovieIds.current.filter((movieId) => movieId !== movieId);
     // cachedMovieIds.current = [movieId, ...cachedMovieIds.current];
 
-    console.log(`[Movie Cache] Returning moive ${movieCache.current.get(movieId)?.title} from cache`);
+    console.log(
+      `[Movie Cache] Returning moive ${
+        movieCache.current.get(movieId)?.title
+      } from cache`
+    );
     return movieCache.current.get(movieId);
   };
 
@@ -73,7 +78,11 @@ const MovieCacheProvider = ({ children }: PropsWithChildren) => {
       movieTitles.push(movie.title);
     });
 
-    console.log(`[Movie Cache] Cache contence: ${Array.from(cachedMovieIds.current)}, Cache Movies: ${movieTitles}`);
+    console.log(
+      `[Movie Cache] Cache contence: ${Array.from(
+        cachedMovieIds.current
+      )}, Cache Movies: ${movieTitles}`
+    );
   };
 
   return (
@@ -92,4 +101,14 @@ const MovieCacheProvider = ({ children }: PropsWithChildren) => {
 
 export default MovieCacheProvider;
 
-export const useMovieCacheProvider = () => useContext(MovieCacheContext);
+export const useMovieCacheProvider = () => {
+  const movieCacheContext = useContext(MovieCacheContext);
+
+  if (!movieCacheContext) {
+    throw new Error(
+      `useMovieCasheProvider context must be used within Movie Cache Provider`
+    );
+  }
+
+  return movieCacheContext;
+};
