@@ -13,12 +13,10 @@ import { useUserMovieData } from "./UserMovieDataProvider";
 import { useDiscoverMovieQueryParams } from "./DiscoverMovieQueryProvider";
 
 export type MovieStackData = {
-  movieStack: MutableRefObject<DiscoverMovie[]>; // Movies on swiping stack
+  movieStack: DiscoverMovie[]; // Movies on swiping stack
   popMovieStack: () => DiscoverMovie | undefined;
-  // addMoviesToStack: () => void;
   resetStack: () => void;
   printStack: () => void; // REMOVE
-  // maybe change genre
 };
 
 export const MovieStackDataContext = createContext<MovieStackData | null>(null);
@@ -27,17 +25,16 @@ const MovieStackDataProvider = ({ children }: PropsWithChildren) => {
   // Providers
   const userMovieData = useUserMovieData();
   const discoverMovieQueryParams = useDiscoverMovieQueryParams();
-  const movieStack = useRef(new Array<DiscoverMovie>());
+  const [movieStack, setMovieStack] = useState(new Array<DiscoverMovie>());
 
   // Internal State
   // Update this to track all genres in the future
   const [pageNumber, setPageNumber] = useState(1);
-  const [reRender, setRerender] = useState(false);
   const [morePagesAvailable, setMorePagesAvailable] = useState(true);
   const [updateMovieSelection, setUpdateMovieSelection] = useState(false);
 
   const popMovieStack = () => {
-    if (movieStack === undefined || movieStack.current.length === 0) {
+    if (movieStack === undefined || movieStack.length === 0) {
       console.log(
         `[Movie Stack Provider] Movie stack empty/undefined: ${movieStack}.`
       );
@@ -45,30 +42,29 @@ const MovieStackDataProvider = ({ children }: PropsWithChildren) => {
     }
 
     // Get element to be popped
-    const popedMovie = movieStack.current[0];
+    const popedMovie = movieStack[0];
 
     // Remove list element
-    movieStack.current = movieStack.current.slice(1, movieStack.current.length);
+    setMovieStack(movieStack.slice(1));
 
     console.log(
       `[Movie Stack Provider] Popping ${popedMovie.title} from stack`
     );
-
-    setRerender(!reRender);
     return popedMovie;
   };
 
   const resetStack = () => {
     console.log(`[Stack Provider] Resetting Stack!`);
-    movieStack.current = [];
+    setMovieStack([]);
+
+    console.log(movieStack);
     setPageNumber(1);
-    setRerender(!reRender);
   };
 
   // REMOVE
   const printStack = () => {
     console.log(`[Print Current Stack]`);
-    movieStack.current.forEach((movie) => console.log(movie.title));
+    movieStack.forEach((movie) => console.log(movie.title));
   };
 
   useEffect(() => {
@@ -99,7 +95,7 @@ const MovieStackDataProvider = ({ children }: PropsWithChildren) => {
         moviePage.discoverMovies.results.filter(
           (movie) =>
             !userMovieData.hasUserSeenMovie(movie.id) &&
-            !movieStack.current.includes(movie)
+            !movieStack.includes(movie)
         );
 
       console.log(
@@ -110,17 +106,17 @@ const MovieStackDataProvider = ({ children }: PropsWithChildren) => {
 
       // Add movies to stack
       if (unseenMovies !== undefined) {
-        movieStack.current = [...movieStack.current, ...unseenMovies];
+        setMovieStack([...movieStack, ...unseenMovies]);
       }
 
       // Update current page count
       setPageNumber(pageNumber + 1);
     };
 
-    if (movieStack.current.length < 10) {
+    if (movieStack.length < 10) {
       addMoviesToStack();
     }
-  });
+  }, [movieStack]);
 
   return (
     <MovieStackDataContext.Provider

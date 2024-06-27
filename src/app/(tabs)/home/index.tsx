@@ -11,11 +11,13 @@ import SwipeableMovie from "@components/SwipeableMovie";
 import { useMovieStackDataProvider } from "@providers/MovieStackProvider";
 import GenreSelection from "@/src/components/GenreSelection";
 import TestButton from "@/src/components/TestButton";
+import { useState } from "react";
 
 const STACK_RENDER_DEPTH = 3;
 
 const HomeScreen = () => {
   const movieStackData = useMovieStackDataProvider();
+  const [reset, setReset] = useState(1);
 
   return (
     <View
@@ -29,7 +31,7 @@ const HomeScreen = () => {
     >
       <GenreSelection />
       <View style={styles.container}>
-        {movieStackData.movieStack.current
+        {movieStackData.movieStack
           .slice(0, STACK_RENDER_DEPTH)
           .map((movieId, index) => (
             <SwipeableMovie
@@ -42,10 +44,10 @@ const HomeScreen = () => {
             />
           ))}
       </View>
-      <TestButton
+      {/* <TestButton
         title={"Reset Movie Stack"}
-        onClick={movieStackData.printStack}
-      />
+        onClick={() => setReset(1 + reset)}
+      /> */}
     </View>
   );
 };

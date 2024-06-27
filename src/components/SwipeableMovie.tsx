@@ -27,9 +27,6 @@ const SwipeableMovie = (props: Props) => {
   const offset = useSharedValue<number>(0);
   const screenWidth = Dimensions.get("screen").width;
 
-  function rotationAmount(offsetValue: number) {}
-  // const { movie, loading, error } = useMovieManager(movieId);
-
   const pan = Gesture.Pan()
     .onBegin(() => {
       pressed.value = true;
